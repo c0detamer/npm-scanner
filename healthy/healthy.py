@@ -3,6 +3,8 @@ import datetime
 import concurrent.futures
 import json
 
+MAX_WORKERS=4
+
 res={}
 
 def handlePackage(package):
@@ -34,7 +36,7 @@ def handlePackage(package):
 packages=["json", "express", "async", "lodash", "cloudinary", "axios", "karma"]
 
 
-with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
+with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
     futures = [executor.submit(handlePackage, repo) for repo in packages]
     concurrent.futures.wait(futures)
 

@@ -1,8 +1,18 @@
 import requests
 import datetime
 import concurrent.futures
+import configparser
 import json
+import os
 
+# load config
+path_current_directory = os.path.dirname(__file__)
+config = configparser.ConfigParser()
+config.read(f"{path_current_directory}/config.ini")
+
+# set secrets
+GITHUB_KEY = config['Secrets']['GITHUB_KEY']
+NPMJS_KEY = config['Secrets']['NPMJS_KEY']
 MAX_WORKERS=4
 
 res={}
@@ -33,8 +43,11 @@ def handlePackage(package):
     res[name].update({"Number of maintainers is at least 2": numOfMaintainers >= 2 })
     res[name].update({"Commit in the last 14 days": gitLastCommitAge < datetime.timedelta(days = 14) })
 
-packages=["json", "express", "async", "lodash", "cloudinary", "axios", "karma"]
 
+
+
+
+packages=["json", "express", "async", "lodash", "cloudinary", "axios", "karma"]
 
 with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
     futures = [executor.submit(handlePackage, repo) for repo in packages]
